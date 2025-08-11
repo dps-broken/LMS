@@ -3,7 +3,7 @@ import axiosInstance from '../../api/axios';
 import toast from 'react-hot-toast';
 import Loader from '../../components/common/Loader.jsx';
 import StudentTable from '../../components/admin/StudentTable.jsx';
-import { Button, Form, Row, Col, Pagination, ListGroup, Badge, Alert } from 'react-bootstrap';
+import { Button, Form, Row, Col, Pagination, ListGroup, Badge, Alert, Table } from 'react-bootstrap';
 import Modal from '../../components/common/Modal.jsx';
 import StudentForm from '../../components/admin/StudentForm.jsx';
 import { format } from 'date-fns';
