@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{orgName}} Internship Completion Certificate</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
+        @media print {
+
+            .document {
+                width: 297mm;
+                height: 210mm;
+                transform: none !important;
+                page-break-after: avoid;
+                page-break-before: avoid;
+                page-break-inside: avoid;
+            }
+
+
+            html,
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 100%;
+                background: white !important;
+            }
+
+            html,
+            body {
+                width: 297mm;
+                height: 210mm;
+                overflow: hidden;
+            }
+
+            .document {
+                box-shadow: none !important;
+                width: 100% !important;
+                margin: 0 !important;
+            }
+
+            .floating-shapes {
+                display: none !important;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e8ebf0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .document {
+            width: 297mm;
+            height: 210mm;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 30%, #1e3c72 100%);
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 25px 50px rgba(0, 0, 0, 0.3),
+                0 10px 30px rgba(30, 60, 114, 0.4);
+            border-radius: 8px;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .shape.circle-1 {
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            left: 8%;
+        }
+
+        .shape.circle-2 {
+            width: 80px;
+            height: 80px;
+            top: 60%;
+            right: 12%;
+        }
+
+        .shape.circle-3 {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 15%;
+        }
+
+        .dynamic-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+            z-index: 1;
+        }
+
+        .org-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-12deg);
+            font-size: 72px;
+            color: rgba(255, 255, 255, 0.04);
+            font-weight: 900;
+            z-index: 1;
+            pointer-events: none;
+            letter-spacing: 8px;
+            white-space: nowrap;
+            text-transform: uppercase;
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        .certificate-frame {
+            position: absolute;
+            top: 8mm;
+            left: 8mm;
+            right: 8mm;
+            bottom: 8mm;
+            background:
+                linear-gradient(135deg, #ffffff 0%, #fafbfc 50%, #ffffff 100%);
+            border-radius: 20px;
+            box-shadow:
+                0 0 0 3px rgba(212, 175, 55, 0.3),
+                0 0 0 6px rgba(255, 255, 255, 0.8),
+                0 0 0 9px rgba(212, 175, 55, 0.2),
+                inset 0 0 40px rgba(30, 60, 114, 0.08),
+                0 15px 35px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .elegant-border {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 3px solid transparent;
+            background: linear-gradient(45deg, #d4af37, #ffd700, #d4af37, #b8860b) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: subtract;
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask-composite: subtract;
+            border-radius: 18px;
+            pointer-events: none;
+        }
+
+        .corner-flourish {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background:
+                radial-gradient(circle at center, #d4af37 0%, #ffd700 50%, #b8860b 100%);
+            clip-path: polygon(0 0, 70% 0, 100% 30%, 100% 100%, 30% 100%, 0 70%);
+            opacity: 0.8;
+        }
+
+        .corner-flourish.top-left {
+            top: 10px;
+            left: 10px;
+        }
+
+        .corner-flourish.top-right {
+            top: 10px;
+            right: 10px;
+            transform: rotate(90deg);
+        }
+
+        .corner-flourish.bottom-left {
+            bottom: 10px;
+            left: 10px;
+            transform: rotate(-90deg);
+        }
+
+        .corner-flourish.bottom-right {
+            bottom: 10px;
+            right: 10px;
+            transform: rotate(180deg);
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+        }
+
+        .header-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+        }
+
+        .org-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        .org-subtitle {
+            font-size: 13px;
+            opacity: 0.95;
+            font-style: italic;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px 50px 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            background:
+                radial-gradient(ellipse at top left, rgba(30, 60, 114, 0.03) 0%, transparent 60%),
+                radial-gradient(ellipse at bottom right, rgba(42, 82, 152, 0.03) 0%, transparent 60%);
+            min-height: 0;
+        }
+
+        .certificate-title {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .cert-type {
+            font-size: 42px;
+            font-weight: 400;
+            color: #1e3c72;
+            letter-spacing: 6px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            position: relative;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .cert-type::before,
+        .cert-type::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+        }
+
+        .cert-type::before {
+            left: -130px;
+        }
+
+        .cert-type::after {
+            right: -130px;
+        }
+
+        .cert-purpose {
+            font-size: 16px;
+            color: #666;
+            font-style: italic;
+            font-weight: 300;
+            letter-spacing: 1px;
+            font-family: 'Book Antiqua', serif;
+        }
+
+        .recipient-section {
+            text-align: center;
+            /* margin: 20px 0; */
+            padding: 0;
+            background: transparent;
+            border: none;
+            position: relative;
+            box-shadow: none;
+        }
+
+        .recipient-section::before {
+            content: none;
+        }
+
+        .awarded-text {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 15px;
+            font-weight: 500;
+            text-transform: none;
+            letter-spacing: 1px;
+            font-family: 'Trebuchet MS', sans-serif;
+        }
+
+        .student-name {
+            font-size: 38px;
+            font-weight: 400;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            letter-spacing: 2px;
+            font-family: 'Brush Script MT', cursive;
+            font-style: italic;
+        }
+
+        .description-text {
+            font-size: 12px;
+            line-height: 1.7;
+            color: #555;
+            text-align: justify;
+            max-width: 100%;
+            margin: 0 auto;
+            font-family: 'Verdana', sans-serif;
+        }
+
+        .description-text p {
+            margin-bottom: 8px;
+        }
+
+        .emphasis-text {
+            color: #1e3c72;
+            font-weight: 700;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        .detail-card {
+            background:
+                linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 18px;
+            text-align: center;
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .detail-card:hover {
+            transform: none;
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .detail-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #1e3c72, #2a5298, #1e3c72);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: #1e3c72;
+            font-weight: 700;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .signature-area {
+            padding: 25px 50px;
+            background:
+                linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%);
+            border-top: 3px solid #d4af37;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            flex-shrink: 0;
+            box-shadow: inset 0 3px 10px rgba(212, 175, 55, 0.1);
+        }
+
+        .signature-block {
+            text-align: center;
+            position: relative;
+        }
+
+        .signature-line {
+            width: 180px;
+            height: 3px;
+            background: linear-gradient(90deg, #1e3c72, #2a5298, #1e3c72);
+            margin: 0 auto 15px;
+            position: relative;
+            border-radius: 2px;
+            box-shadow: 0 2px 5px rgba(30, 60, 114, 0.2);
+        }
+
+        .signature-line::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 0;
+            right: 0;
+            height: 7px;
+            background: linear-gradient(90deg, transparent, rgba(30, 60, 114, 0.2), transparent);
+            border-radius: 4px;
+        }
+
+        .signature-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 5px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .signature-title {
+            font-size: 11px;
+            color: #777;
+            font-style: italic;
+            letter-spacing: 0.5px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .official-seal {
+            width: 90px;
+            height: 90px;
+            background:
+                radial-gradient(circle at 30% 30%, #ffd700 0%, #d4af37 50%, #b8860b 100%);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 9px;
+            font-weight: 900;
+            text-align: center;
+            box-shadow:
+                0 10px 25px rgba(212, 175, 55, 0.4),
+                inset 0 2px 5px rgba(255, 255, 255, 0.3);
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .official-seal::before {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border: 2px dashed rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+        }
+
+        .certificate-id {
+            position: absolute;
+            bottom: 10px;
+            left: 25px;
+            font-size: 11px;
+            color: #aaa;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .decorative-accent {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background:
+                linear-gradient(45deg, rgba(212, 175, 55, 0.6), rgba(255, 215, 0, 0.4));
+            transform: rotate(45deg);
+            border-radius: 8px;
+            opacity: 0.7;
+        }
+
+        .decorative-accent.accent-1 {
+            top: 80px;
+            left: 120px;
+        }
+
+        .decorative-accent.accent-2 {
+            top: 140px;
+            right: 100px;
+            transform: rotate(45deg) scale(0.8);
+        }
+
+        .decorative-accent.accent-3 {
+            bottom: 120px;
+            left: 80px;
+            transform: rotate(45deg) scale(0.6);
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media screen and (max-width: 1200px) {
+            .document {
+                transform: scale(0.8);
+                margin: 10px auto;
+            }
+        }
+
+        @media screen and (max-width: 900px) {
+            .document {
+                transform: scale(0.6);
+                margin: 5px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="document">
+        <div class="floating-shapes">
+            <div class="shape circle-1"></div>
+            <div class="shape circle-2"></div>
+            <div class="shape circle-3"></div>
+        </div>
+
+        <div class="dynamic-pattern"></div>
+        <div class="org-watermark">{{orgName}}</div>
+
+        <div class="certificate-frame">
+            <div class="elegant-border"></div>
+            <div class="corner-flourish top-left"></div>
+            <div class="corner-flourish top-right"></div>
+            <div class="corner-flourish bottom-left"></div>
+            <div class="corner-flourish bottom-right"></div>
+
+            <div class="decorative-accent accent-1"></div>
+            <div class="decorative-accent accent-2"></div>
+            <div class="decorative-accent accent-3"></div>
+
+            <div class="header-banner">
+                <h1 class="org-title">{{orgName}}</h1>
+                <p class="org-subtitle">Center of Excellence & Innovation</p>
+            </div>
+
+            <div class="main-content">
+                <div class="certificate-title">
+                    <h2 class="cert-type">Certificate</h2>
+                    <p class="cert-purpose">of Internship Achievement</p>
+                </div>
+
+                <div class="recipient-section">
+                    <p class="awarded-text">This Certificate is Proudly Awarded To</p>
+                    <h3 class="student-name">{{studentName}}</h3>
+                </div>
+
+                <div class="description-text">
+                    <p>This certifies that the above-named individual has successfully completed an intensive internship
+                        program as a <span class="emphasis-text">{{courseName}} Intern</span> at {{orgName}}, located at
+                        {{orgAddress}}. The internship was conducted with exemplary dedication and professional
+                        excellence.</p>
+
+                    <p>Throughout the internship period, {{studentHeShe}} has demonstrated outstanding competency in
+                        {{internContribution}} and has made significant contributions to our {{department}} through
+                        {{projectDetails}}. The primary focus of {{studentHisHer}} work was {{projectGoal}}, which
+                        {{studentHeShe}} accomplished with remarkable skill and innovation.</p>
+
+                    <p>{{studentHisHer}} performance has been {{internImpact}}, showcasing exceptional learning ability,
+                        professional ethics, and commitment to excellence. We commend {{studentHisHer}} achievements and
+                        wish {{studentHisHer}} continued success in future endeavors.</p>
+                </div>
+
+                <div class="details-grid">
+                    <div class="detail-card">
+                        <div class="detail-label">Internship Period</div>
+                        <div class="detail-value">{{Start Date}} to {{internshipEndDate}}</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label">Department</div>
+                        <div class="detail-value">{{department}}</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label">Issue Date</div>
+                        <div class="detail-value">{{internshipEndDate}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="signature-area">
+                <div class="signature-block">
+                    <div class="signature-line"></div>
+                    <div class="signature-name">{{ceoName}}</div>
+                    <div class="signature-title">{{ceoTitle}}</div>
+                </div>
+
+                <div class="official-seal">
+                    <div>Official</div>
+                    <div>Seal</div>
+                    <div style="font-size: 8px; margin-top: 8px;">{{internshipEndDate}}</div>
+                </div>
+            </div>
+
+            <div class="certificate-id">Certificate ID: {{documentId}}</div>
+        </div>
+    </div>
+</body>
+
+</html>

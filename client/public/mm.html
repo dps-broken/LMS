@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{orgName}} Job Offer Letter</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+
+    @media print {
+      body {
+        background-color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .document {
+        box-shadow: none !important;
+        page-break-inside: avoid;
+      }
+
+      .footer {
+        position: relative;
+        bottom: 0;
+        width: 100%;
+      }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 0;
+    }
+
+    .document {
+      width: 210mm;
+      min-height: 297mm;
+      margin: auto;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding-bottom: 20mm;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #c41e3a 0%, #e53e3e 100%);
+      color: white;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      right: -30px;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      background: linear-gradient(135deg, #e53e3e 0%, #ff4757 100%);
+      transform: skewX(-15deg);
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+    }
+
+    .logo-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .company-name {
+      font-size: 32px;
+      font-weight: bold;
+      letter-spacing: -1px;
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background-color: #ff4757;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transform: rotate(45deg);
+    }
+
+    .logo-icon::before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background-color: white;
+      border-radius: 50%;
+      top: 8px;
+      left: 12px;
+    }
+
+    .logo-icon::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: white;
+      border-radius: 50%;
+      top: 12px;
+      right: 8px;
+    }
+
+    .dots-pattern {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    .dots-pattern::before {
+      content: '';
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background-color: white;
+      border-radius: 50%;
+      top: 0;
+      left: 4px;
+    }
+
+    .contact-info {
+      text-align: right;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .content {
+      padding: 30mm 25mm 10mm 25mm;
+      background-color: white;
+    }
+
+    .recipient {
+      margin-bottom: 20px;
+    }
+
+    .recipient-name {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .recipient-address {
+      color: #c41e3a;
+      font-size: 14px;
+    }
+
+    .date-section {
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .subject {
+      font-weight: bold;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .letter-body {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .letter-body p {
+      margin-bottom: 15px;
+    }
+
+    .employment-details {
+      margin: 20px 0;
+    }
+
+    .employment-details ul {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+
+    .employment-details li {
+      margin-bottom: 6px;
+    }
+
+    .signature-section {
+      margin-top: 30px;
+    }
+
+    .signature {
+      font-size: 32px;
+      font-weight: bold;
+      margin: 20px 0 10px 0;
+      color: #333;
+      font-family: cursive;
+    }
+
+    .signature-details {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .footer {
+      height: 20px;
+      background: linear-gradient(90deg, #333 0%, #c41e3a 20%, #c41e3a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      padding: 5px;
+    }
+
+    .vertical-line {
+      position: absolute;
+      right: 340px;
+      top: 15px;
+      bottom: 15px;
+      width: 2px;
+      background-color: rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="document">
+    <div class="header">
+      <div class="vertical-line"></div>
+      <div class="logo-section">
+        <div class="logo-left">
+          <h1 class="company-name">{{orgName}}</h1>
+          <div class="logo-icon">
+            <div class="dots-pattern"></div>
+          </div>
+        </div>
+        <div class="contact-info">
+          {{orgAddress}}<br />
+          {{orgPhone}}<br />
+          <a href="{{orgWebsite}}" style="color:white;">{{orgWebsite}}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="recipient">
+        <div class="recipient-name">{{studentName}}</div>
+        <div class="recipient-address">{{studentAddress}}</div>
+      </div>
+
+      <div class="date-section">
+        {{issueDate}}<br />
+        Dear {{studentName}},
+      </div>
+
+      <div class="subject">
+        RE: JOB OFFER – {{courseName}} INTERN POSITION
+      </div>
+
+      <div class="letter-body">
+        <p>
+          I am delighted to offer you the position of <strong>{{courseName}} Intern</strong> at <strong>{{orgName}}</strong>. Your creative talents and passion have impressed our team, and we believe your skills will be an excellent addition to our <strong>{{batchName}}</strong> program.
+        </p>
+
+        <p>Here are the details of your employment:</p>
+
+        <div class="employment-details">
+          <ul>
+            <li>Position: {{courseName}} Intern</li>
+            <li>Department: {{department}}</li>
+            <li>Start Date: {{Start Date}}</li>
+            <li>Duration: {{internshipDuration}}</li>
+            <li>Compensation: {{stipend}}</li>
+            <li>Working Hours: {{workingHours}}</li>
+            <li>Reporting Manager: {{Supervisor's Name}}, {{Supervisor's Title}}</li>
+          </ul>
+        </div>
+
+        <p>
+          Please confirm your acceptance of this job offer by signing and returning a copy of this letter by <strong>{{acceptanceDeadline}}</strong>. You can scan and email the signed copy to <a href="mailto:{{orgEmail}}">{{orgEmail}}</a>.
+        </p>
+
+        <p>
+          Should you have any questions, please contact me at <a href="mailto:{{orgEmail}}">{{orgEmail}}</a> or call {{orgPhone}}.
+        </p>
+
+        <p>
+          We are thrilled to welcome you as a <strong>{{courseName}} Intern</strong> at <strong>{{orgName}}</strong> and look forward to working with you. Congratulations again!
+        </p>
+
+        <div class="signature-section">
+          <p>Sincerely,</p>
+          <div class="signature">M</div>
+          <div class="signature-details">
+            {{signerName}}<br />
+            {{signerTitle}}<br />
+            {{orgName}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Document ID: {{documentId}}
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{orgName}} Job Offer Letter</title>
+  <style>
+    /* A4 Optimization */
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    @media print {
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100%;
+        background: white !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+      }
+
+      .document {
+        box-shadow: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+      }
+
+      .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background-color: #ffffff;
+      color: #333333;
+      font-size: 13px;
+    }
+
+    .document {
+      width: 210mm;
+      height: 297mm;
+      background-color: white;
+      margin: 0 auto;
+      padding: 15mm 20mm;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .top-border {
+      height: 6px;
+      background: linear-gradient(90deg, #2c5282 0%, #3182ce 100%);
+    }
+
+    .corner-shape {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(45deg, #e2e8f0 0%, #cbd5e1 100%);
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 30% 100%, 0 100%);
+      opacity: 0.3;
+    }
+
+    .side-line {
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 40px;
+      width: 3px;
+      background: #2c5282;
+    }
+
+    .header {
+      padding: 5mm 0 0mm 0;
+      position: relative;
+    }
+
+    .company-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6mm;
+    }
+
+    .company-info {
+      flex: 1;
+    }
+
+    .company-name {
+      font-size: 22px;
+      font-weight: bold;
+      color: #2c5282;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .company-address {
+      font-size: 12px;
+      color: #4a5568;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      word-wrap: break-word;
+    }
+
+    .company-contact {
+      font-size: 11px;
+      color: #718096;
+    }
+
+    .company-contact a {
+      color: #2c5282;
+      text-decoration: none;
+    }
+
+    .logo-placeholder {
+      width: 60px;
+      height: 60px;
+      background: #f7fafc;
+      border: 2px solid #2c5282;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #2c5282;
+    }
+
+    .content {
+      padding: 0;
+    }
+
+    .letter-title {
+      text-align: center;
+      margin-bottom: 4mm;
+    }
+
+    .title-main {
+      font-size: 18px;
+      color: #2d3748;
+      font-weight: 600;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .title-sub {
+      font-size: 12px;
+      color: #718096;
+      font-style: italic;
+    }
+
+    .letter-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4mm;
+    }
+
+    .recipient-info {
+      flex: 1;
+    }
+
+    .recipient-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 4px;
+    }
+
+    .recipient-address {
+      font-size: 12px;
+      color: #4a5568;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .date-info {
+      text-align: right;
+      font-size: 12px;
+      color: #4a5568;
+    }
+
+    .date-label {
+      font-weight: 600;
+    }
+
+    .subject-line {
+      background: #f7fafc;
+      border-left: 3px solid #2c5282;
+      padding: 10px 15px;
+      margin-bottom: 3mm;
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 13px;
+    }
+
+    .letter-body {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #2d3748;
+    }
+
+    .greeting {
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .paragraph {
+      /* margin-bottom: 12px; */
+      text-align: justify;
+    }
+
+    .highlight {
+      font-weight: 600;
+      color: #2c5282;
+    }
+
+    .employment-details {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      margin: 12px 0;
+      overflow: hidden;
+      page-break-inside: avoid;
+    }
+
+    .details-header {
+      background: linear-gradient(90deg, #2c5282 0%, #3182ce 100%);
+      color: white;
+      padding: 10px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .details-content {
+      padding: 12px 16px;
+    }
+
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .details-table tr {
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .details-table td {
+      padding: 5px 0;
+      vertical-align: top;
+    }
+
+    .details-table td:first-child {
+      width: 35%;
+      font-weight: 500;
+      color: #4a5568;
+    }
+
+    .details-table td:last-child {
+      color: #2d3748;
+      font-weight: 600;
+    }
+
+    .next-steps {
+      background: #edf2f7;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 12px 15px;
+      margin: 10px 0;
+      page-break-inside: avoid;
+    }
+
+    .next-steps-title {
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 5px;
+    }
+
+    .next-steps-text {
+      color: #4a5568;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .signature-section {
+      margin-top: 7mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      page-break-inside: avoid;
+    }
+
+    .signature-block {
+      flex: 1;
+      max-width: 180px;
+    }
+
+    .closing {
+      /* margin-bottom: 8px; */
+      color: #4a5568;
+    }
+
+    .signature-line {
+      font-size: 20px;
+      font-family: cursive;
+      color: #2c5282;
+      margin-bottom: 5px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+    }
+
+    .signature-info {
+      border-top: 1px solid #cbd5e1;
+      padding-top: 4px;
+      font-size: 11px;
+      color: #4a5568;
+      line-height: 1.3;
+    }
+
+    .signer-name {
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .company-seal {
+      width: 60px;
+      height: 60px;
+      border: 2px solid #2c5282;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f7fafc;
+      margin-left: 15px;
+    }
+
+    .seal-text {
+      font-size: 8px;
+      color: #2c5282;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #2c5282;
+      color: white;
+      padding: 1.5px;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    a {
+      color: #2c5282;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="document">
+    <div class="top-border"></div>
+    <div class="corner-shape"></div>
+    <div class="side-line"></div>
+
+    <div class="header">
+      <div class="company-header">
+        <div class="company-info">
+          <h1 class="company-name">{{orgName}}</h1>
+          <div class="company-address">{{orgAddress}}</div>
+          <div class="company-contact">
+            {{orgPhone}} | <a href="{{orgWebsite}}">{{orgWebsite}}</a>
+          </div>
+        </div>
+        <div class="logo-placeholder">
+          D
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="letter-title">
+        <h2 class="title-main">Job Offer Letter</h2>
+        <div class="title-sub">Official Employment Offer</div>
+      </div>
+
+      <div class="letter-meta">
+        <div class="recipient-info">
+          <div class="recipient-name">{{studentName}}</div>
+          <div class="recipient-address">{{studentAddress}}</div>
+        </div>
+        <div class="date-info">
+          <div><span class="date-label">Date:</span> {{issueDate}}</div>
+          <div><span class="date-label">Ref:</span> {{documentId}}</div>
+        </div>
+      </div>
+
+      <div class="subject-line">
+        Subject: Job Offer - {{courseName}} Intern Position
+      </div>
+
+      <div class="letter-body">
+        <div class="greeting">Dear {{studentName}},</div>
+
+        <div class="paragraph">
+          We are pleased to offer you the position of <span class="highlight">{{courseName}} Intern</span> at <span class="highlight">{{orgName}}</span>. After careful consideration of your qualifications and interview performance, we believe you will be a valuable addition to our <span class="highlight">{{batchName}}</span> program.
+        </div>
+
+        <div class="paragraph">
+          This internship will provide you with hands-on experience in your field of study while contributing to meaningful projects within our organization. We are confident this opportunity will enhance your professional development and career prospects.
+        </div>
+
+        <div class="employment-details">
+          <div class="details-header">Employment Details</div>
+          <div class="details-content">
+            <table class="details-table">
+              <tr>
+                <td>Position:</td>
+                <td>{{courseName}} Intern</td>
+              </tr>
+              <tr>
+                <td>Department:</td>
+                <td>{{department}}</td>
+              </tr>
+              <tr>
+                <td>Start Date:</td>
+                <td>{{Start Date}}</td>
+              </tr>
+              <tr>
+                <td>Duration:</td>
+                <td>{{internshipDuration}} Month</td>
+              </tr>
+              <tr>
+                <td>Stipend:</td>
+                <td>{{stipend}}</td>
+              </tr>
+              <tr>
+                <td>Working Hours:</td>
+                <td>{{workingHours}}</td>
+              </tr>
+              <tr>
+                <td>Reporting To:</td>
+                <td>{{Supervisor's Name}}, {{Supervisor's Title}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="next-steps">
+          <div class="next-steps-title">Next Steps</div>
+          <div class="next-steps-text">
+            To accept this offer, please sign and return this letter by {{acceptanceDeadline}}. You may email the signed copy to <a href="mailto:{{orgEmail}}">{{orgEmail}}</a> or submit it in person at our office.
+          </div>
+        </div>
+
+        <div class="paragraph">
+          If you have any questions about this offer or need additional information, please contact me at <a href="mailto:{{orgEmail}}">{{orgEmail}}</a> or {{orgPhone}}.
+        </div>
+
+        <div class="paragraph">
+          We look forward to welcoming you to our team and are excited about the contributions you will make to <span class="highlight">{{orgName}}</span>.
+        </div>
+
+        <div class="signature-section">
+          <div class="signature-block">
+            <div class="closing">Sincerely,</div>
+            <div class="signature-line">{{signerName.charAt(0)}}</div>
+            <div class="signature-info">
+              <div class="signer-name">{{signerName}}</div>
+              <div>{{signerTitle}}</div>
+              <div>{{orgName}}</div>
+            </div>
+          </div>
+          <div class="company-seal">
+            <div class="seal-text">Official<br>Seal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,235 @@
+.sidebar {
+    width: 260px;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: background-color 0.3s;
+}
+
+.sidebar-header {
+    padding: 1.5rem 1rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-logo {
+    height: 32px;
+    margin-right: 1rem;
+}
+
+.sidebar-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    padding-top: 1rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.85rem 1.5rem;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 5px;
+    margin: 0.25rem 0.5rem;
+}
+
+.sidebar-link:hover {
+    background-color: var(--sidebar-hover-bg);
+    color: #fff;
+}
+
+.sidebar-link.active {
+    background-color: var(--sidebar-active-bg);
+    color: #fff;
+    font-weight: 500;
+}
+
+.sidebar-link svg {
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+/* --- Desktop Sidebar Styles (Default) --- */
+.sidebar {
+    width: 260px;
+    background-color: var(--sidebar-bg, #1a1a1a);
+    color: var(--sidebar-text, #e0e0e0);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: background-color 0.3s;
+    border-right: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+}
+
+.sidebar-header {
+    padding: 1.5rem 1rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+}
+
+.sidebar-logo {
+    height: 32px;
+    margin-right: 1rem;
+}
+
+.sidebar-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    padding-top: 1rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.85rem 1.5rem;
+    color: #a0a0a0;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 5px;
+    margin: 0.25rem 0.5rem;
+}
+
+.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.sidebar-link.active {
+    background: linear-gradient(90deg, var(--primary-color, #5a7dff), var(--dark-accent, #c41e3a));
+    color: #ffffff;
+    font-weight: 500;
+    box-shadow: 0 0 15px rgba(90, 125, 255, 0.3);
+}
+
+.sidebar-link svg {
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+.sidebar-overlay {
+    display: none; /* Hidden on desktop */
+}
+
+
+/* --- Mobile Responsive Styles (screens smaller than 992px) --- */
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed; /* Position it over the content */
+        left: -260px; /* Start off-screen */
+        top: 0;
+        bottom: 0;
+        z-index: 1050; /* Higher than the header */
+        transition: left 0.3s ease-in-out; /* Smooth slide-in animation */
+        background-color: #000000 !important;
+    }
+
+    .sidebar.show {
+        left: 0; /* Slide in when 'show' class is added */
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgb(0, 0, 0); /* Semi-transparent black overlay */
+        z-index: 1040; /* Below the sidebar but above the content */
+        display: block; /* Only visible when sidebar is open (controlled by JSX) */
+    }
+}
+/* --- Base Sidebar Styles --- */
+.sidebar {
+    width: 260px;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    transition: margin-left 0.3s ease-in-out; /* Smooth transition for desktop toggle (optional) */
+}
+
+.sidebar-header {
+    padding: 1.5rem 1rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.sidebar-logo { height: 32px; margin-right: 1rem; }
+.sidebar-title { font-size: 1.25rem; font-weight: 600; }
+.sidebar-nav { flex-grow: 1; padding-top: 1rem; }
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.85rem 1.5rem;
+    color: #a0a0a0;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 5px;
+    margin: 0.25rem 0.5rem;
+}
+.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+.sidebar-link.active {
+    background: linear-gradient(90deg, #5a7dff, #c41e3a);
+    color: #ffffff;
+    font-weight: 500;
+    box-shadow: 0 0 15px rgba(90, 125, 255, 0.3);
+}
+.sidebar-link svg { margin-right: 1rem; font-size: 1.2rem; }
+
+/* Overlay for mobile */
+.sidebar-overlay { display: none; }
+
+/* --- Mobile Responsive Styles --- */
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed;
+        left: -260px; /* Start hidden off-screen */
+        top: 0;
+        bottom: 0;
+        z-index: 1050;
+        transition: left 0.3s ease-in-out;
+    }
+
+    .sidebar.show {
+        left: 0; /* Slide in when 'show' class is added */
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 1040;
+        display: block; /* The parent JSX controls its rendering */
+    }
+    .page-wrapper{
+        height: 100% !important;
+        width: 100 !important;
+        margin: 0 !important;
+    }
+}
+.header-glass .btn-outline-secondary{
+    border: none !important;
+    color: rgb(255, 0, 212) !important;
+}
