@@ -1,80 +1,83 @@
 import asyncHandler from 'express-async-handler';
-import fs from 'fs-extra';
+import fs from 'fs-extra'; // Used for file system operations like creating directories and writing files
 import path from 'path';
-import { fileURLToPath } from 'url';
-import puppeteer from 'puppeteer';
-import { format } from 'date-fns';
+import { fileURLToPath } from 'url'; // Helper for getting __dirname in ES modules
+import puppeteer from 'puppeteer-core'; // Using puppeteer-core for browserless execution
+import chrome from 'chrome-aws-lambda'; // Module that provides a headless browser executable
+import { format } from 'date-fns'; // For formatting dates
 
 // Import local modules and configurations
 import Document from '../models/Document.js';
 import User from '../models/User.js';
 import InternshipApplication from '../models/InternshipApplication.js';
-import { sendDocumentEmail } from '../services/emailService.js';
-import orgDetails from '../config/organization.config.js';
+import { sendDocumentEmail } from '../services/emailService.js'; // Email utility service
+import orgDetails from '../config/organization.config.js'; // Organization details configuration
 
-// Setup __dirname for ES Modules
+// Resolve the current file's directory to correctly join other paths.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- ADMIN CONTROLLERS ---
-
 /**
- * Generates a PDF document (Certificate or Offer Letter), saves it,
- * records it in the database, and emails it to the student.
- * It dynamically populates an HTML template with data from the request body,
- * the student's profile, and the global organization configuration file.
+ * @desc    Generates a PDF document (Certificate or Offer Letter), saves it to the server,
+ *          records it in the database, and emails it to the student.
+ * @route   POST /api/admin/documents/generate
+ * @access  Private/Admin
  */
 const generateDocument = asyncHandler(async (req, res) => {
-    // 1. Destructure all possible fields from the request body sent by the admin form.
+    // Destructure all possible fields from the request body.
+    // These fields come from the frontend form.
     const { 
-        studentId, type, title,
-        // Certificate-specific details from the form
-        pronounHeShe, pronounHisHer, projectDetails, projectGoal, internContribution, internImpact, internshipEndDate,
-        // Offer Letter-specific details from the form
-        studentAddress, internshipDuration, stipend, workingHours, supervisorName, supervisorTitle, acceptanceDeadline
+        studentId, type, title, // Basic info
+        pronounHeShe, pronounHisHer, projectDetails, projectGoal, internContribution, internImpact, internshipEndDate, // Certificate-specific
+        studentAddress, internshipDuration, stipend, workingHours, supervisorName, supervisorTitle, acceptanceDeadline // Offer Letter-specific
     } = req.body;
 
-    // 2. Fetch the full student, batch, and department details from the database.
+    // --- Step 1: Fetch Student Data ---
+    // Find the student by ID and populate their batch and department for contextual data.
     const student = await User.findById(studentId).populate('batch').populate('department');
     if (!student) {
         res.status(404);
-        throw new Error('Student not found');
+        throw new Error('Student not found.');
     }
-
-    // 3. Determine the correct HTML template file and verify it exists.
-    const templateFileName = type === 'offer_letter' ? 'offer_letter.html' : 'certificate.html';
+    
+    // --- Step 2: Determine the Correct HTML Template ---
+    // Select the appropriate template file based on the 'type' sent from the frontend.
+    let templateFileName = type === 'offer_letter' ? 'offer_letter.html' : 'certificate.html';
     const templatePath = path.join(__dirname, `../templates/${templateFileName}`);
+
+    // Safety check: Ensure the template file actually exists on the server.
     if (!fs.existsSync(templatePath)) {
         console.error(`Template file not found at path: ${templatePath}`);
+        res.status(404);
         throw new Error(`Template file not found: ${templateFileName}`);
     }
+    // Read the HTML content of the selected template file.
     let html = fs.readFileSync(templatePath, 'utf8');
     
-    // 4. Consolidate all data for injection into the template.
-    //    This object merges data from multiple sources: the form, the database, and the config file.
+    // --- Step 3: Prepare Dynamic Data for Injection ---
+    // Consolidate all data needed for the document. It merges form data,
+    // student details, and organization defaults.
     const documentData = {
-        // --- Universal Data ---
+        // Universal Data (available for both certificate and offer letter)
         studentName: student.fullName,
-        courseName: title, // Represents "Position Name" in offer letters
-        batchName: student.batch.name,
+        courseName: title, // This will be the "Position Name" for offer letters
+        batchName: student.batch?.name || 'N/A', // Safely get batch name
         issueDate: format(new Date(), 'MMMM do, yyyy'),
         documentId: `DOC-${Date.now()}`,
-        department: student.department?.name || 'Assigned Department',
+        department: student.department?.name || 'N/A', // Safely get department name
 
-        // --- Organization Data (from config) ---
+        // Organization Data (from the config file)
         orgName: orgDetails.name,
         orgAddress: orgDetails.address,
         orgWebsite: orgDetails.website,
         orgPhone: orgDetails.phone,
         orgEmail: orgDetails.email,
         
-        // --- Role-Specific Signer Data (from config) ---
-        signerName: orgDetails.signerName,   // For Offer Letters (e.g., HR Manager)
-        signerTitle: orgDetails.signerTitle,
-        ceoName: orgDetails.ceoName,         // For Certificates (e.g., CEO)
-        ceoTitle: orgDetails.ceoTitle,
+        // Signer details based on document type (from config file)
+        signerName: type === 'offer_letter' ? orgDetails.signerName : orgDetails.ceoName,
+        signerTitle: type === 'offer_letter' ? orgDetails.signerTitle : orgDetails.ceoTitle,
 
-        // --- Certificate-Specific Data (with fallbacks to defaults) ---
+        // Certificate-Specific Data (with fallbacks to defaults from orgDetails)
         studentHeShe: pronounHeShe || 'They',
         studentHisHer: pronounHisHer || 'Their',
         projectDetails: projectDetails || orgDetails.defaultProjectDetails,
@@ -83,9 +86,9 @@ const generateDocument = asyncHandler(async (req, res) => {
         internImpact: internImpact || orgDetails.defaultInternImpact,
         internshipEndDate: internshipEndDate 
             ? format(new Date(internshipEndDate), 'MMMM do, yyyy') 
-            : format(new Date(student.batch.endTime), 'MMMM do, yyyy'), // Fallback to batch end date
+            : format(new Date(student.batch?.endTime || Date.now()), 'MMMM do, yyyy'), // Fallback to batch end date or now
         
-        // --- Offer Letter-Specific Data (with fallbacks to defaults) ---
+        // Offer Letter-Specific Data (with fallbacks to defaults from orgDetails)
         studentAddress: studentAddress || '[Student Address Not Provided]',
         internshipDuration: internshipDuration || orgDetails.defaultInternshipDuration,
         stipend: stipend || orgDetails.defaultStipend,
@@ -95,50 +98,60 @@ const generateDocument = asyncHandler(async (req, res) => {
         acceptanceDeadline: acceptanceDeadline 
             ? format(new Date(acceptanceDeadline), 'MMMM do, yyyy') 
             : orgDetails.defaultAcceptanceDeadline,
-        'Start Date': format(new Date(student.batch.startTime), 'MMMM do, yyyy'), // Use batch start date
+        'Start Date': format(new Date(student.batch?.startTime || Date.now()), 'MMMM do, yyyy'), // Use batch start date or now
     };
 
-    // 5. Replace all placeholders in the HTML template.
+    // 5. Replace all placeholders (e.g., {{studentName}}) in the HTML string with the actual data.
     for (const key in documentData) {
-        // Using a global regex to replace all instances of a placeholder, e.g., {{orgName}}
         const regex = new RegExp(`{{${key}}}`, 'g');
-        html = html.replace(regex, documentData[key] || ''); // Fallback to empty string
+        // Use empty string as a fallback if a value is undefined/null to prevent errors.
+        html = html.replace(regex, documentData[key] || ''); 
     }
     
-    // 6. Generate the PDF using Puppeteer.
-    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    // --- Step 6: Generate PDF using Puppeteer ---
+    const browser = await puppeteer.launch({ 
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'] // Necessary for many server environments
+    });
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
-    await browser.close();
     
-    // 7. Save the PDF to the server's filesystem.
+    // Set the HTML content and wait for the page to be ready
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+    // Generate the PDF buffer
+    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+    
+    await browser.close(); // Close the browser to free up resources
+    
+    // --- Step 7: Save the PDF to the Server's File System ---
     const outputDir = path.join(__dirname, '../uploads/documents/');
-    await fs.ensureDir(outputDir);
+    await fs.ensureDir(outputDir); // Ensure the directory exists (creates it if not)
     const pdfPath = path.join(outputDir, `${documentData.documentId}.pdf`);
     await fs.writeFile(pdfPath, pdfBuffer);
     
-    // 8. Create a record of the generated document in the database.
+    // --- Step 8: Create a record of this document in the database ---
     const fileUrl = `/uploads/documents/${documentData.documentId}.pdf`;
     const docRecord = await Document.create({ 
         student: studentId, 
         type, 
         title, 
         fileUrl, 
-        batchName: student.batch.name 
+        batchName: student.batch?.name || 'N/A' // Safely get batch name
     });
 
-    // 9. Email the document to the student.
+    // --- Step 9: Email the generated PDF to the student ---
     await sendDocumentEmail(student.email, `Your ${title} from ${orgDetails.name}`, pdfBuffer, `${title.replace(/\s+/g, '_')}.pdf`);
     
-    // 10. Send a success response.
+    // --- Step 10: Send a success response ---
     res.status(201).json({ message: 'Document generated and sent successfully.', document: docRecord });
 });
 
-// @desc    Get a log of all generated documents
-// @route   GET /api/admin/documents
-// @access  Private/Admin
+/**
+ * @desc    Get a log of all generated documents
+ * @route   GET /api/admin/documents
+ * @access  Private/Admin
+ */
 const getAllDocuments = asyncHandler(async (req, res) => {
+    // Fetch all documents and populate student details for better display.
     const documents = await Document.find({})
         .populate('student', 'fullName email')
         .sort({ createdAt: -1 });
@@ -148,34 +161,48 @@ const getAllDocuments = asyncHandler(async (req, res) => {
 
 // --- STUDENT CONTROLLERS ---
 
-// @desc    Get all documents for the logged-in student
-// @route   GET /api/student/documents
-// @access  Private/Student
+/**
+ * @desc    Get all documents for the currently logged-in student
+ * @route   GET /api/student/documents
+ * @access  Private/Student
+ */
 const getDocumentsForStudent = asyncHandler(async (req, res) => {
+    // Find all documents specifically linked to the logged-in student.
     const documents = await Document.find({ student: req.user._id }).sort({ issueDate: -1 });
     res.json(documents);
 });
 
-// @desc    Accept an internship offer letter
-// @route   PUT /api/student/documents/offer/:id/accept
-// @access  Private/Student
+/**
+ * @desc    Handle the student's acceptance of an internship offer letter.
+ * @route   PUT /api/student/documents/offer/:id/accept
+ * @access  Private/Student
+ */
 const acceptOfferLetter = asyncHandler(async (req, res) => {
+    // Find the specific offer letter document by ID.
     const document = await Document.findById(req.params.id);
 
+    // Security checks: ensure the document exists, belongs to the student, and is an offer letter.
     if (!document || document.student.toString() !== req.user._id.toString() || document.type !== 'offer_letter') {
         res.status(404);
         throw new Error('Offer letter not found or invalid.');
     }
     
+    // Find the user and update their internship status.
     const user = await User.findById(req.user._id);
     user.internshipStatus = 'accepted';
-    await user.save();
+    const updatedUser = await user.save();
     
-    await InternshipApplication.findOneAndUpdate({student: req.user._id}, {status: 'accepted'});
+    // Also update the status on the internship application record for consistency.
+    await InternshipApplication.findOneAndUpdate({ student: req.user._id }, { status: 'accepted' });
 
-    res.json({ message: 'Offer accepted successfully! Your status has been updated.' });
+    // Send back a success message and the updated status for immediate UI updates.
+    res.json({ 
+        message: 'Offer accepted successfully! Your status has been updated.',
+        internshipStatus: updatedUser.internshipStatus 
+    });
 });
 
+// Export all the functions from this controller.
 export {
     generateDocument,
     getAllDocuments,
