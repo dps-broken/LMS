@@ -10,7 +10,7 @@ import { FiBookOpen, FiCalendar, FiCheckSquare, FiFileText, FiBriefcase, FiEdit 
  * A reusable card component for the dashboard grid.
  */
 const DashboardCard = ({ to, icon, title, text }) => (
-    <Col lg={4} md={6} className="mb-4">
+    <Col lg={3} md={6} className="mb-4">
         <Link to={to} className="text-decoration-none">
             <Card className="h-100 shadow-sm dashboard-card">
                 <Card.Body className="d-flex flex-column align-items-center text-center">

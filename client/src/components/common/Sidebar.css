@@ -228,6 +228,9 @@
         width: 100 !important;
         margin: 0 !important;
     }
+    .page-wrapper{
+        min-height: 100vh;
+    }
 }
 .header-glass .btn-outline-secondary{
     border: none !important;
